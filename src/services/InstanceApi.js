@@ -15,7 +15,7 @@ export const createAxiosInstanceAuth = () => {
     const token = localStorage.getItem('Authorization');
     return axios.create({
       headers: {
-        'apikey': `${process.env.REACT_APP_API_KEY}`,
+        // 'apikey': `${process.env.REACT_APP_API_KEY}`,
         'Authorization': `${token}`
         
       },

@@ -1,118 +1,60 @@
-import { LoginUser, LoginUserWithOtp, MerchantOnBoard, SearchUser, UserOnBoarding, VerifyOtp } from "../../services/Services";
+import { GetAllDepartments, GetAllDepartmentsOfManager, LoginUser, RegisterUser } from "../../services/Services";
+import { setUser, setLoading, setError } from "./authSlice";import { toast } from "react-toastify";
 import { setUserLogin, setLoadingLogin, setErrorLogin } from "./loginSlice";
-import { setLoginWithOtp, setLoginWithOtpLoading, setLoginWithOtpError }  from './loginWithOtpSlice'
-import { setSearchUser, setSearchUserLoading, setSearchUserError }  from './searchUserSlice'
-import { setVerifyOtp, setVerifyOtpLoading, setVerifyOtpError } from './verifyOtpSlice'
-import { setUserOnBoard, setUserOnBoardLoading, setUserOnBoardError }  from './UserOnBoardSlice'
-import { setMerchantOnBoard, setMerchantOnBoardLoading, setMerchantOnBoardError } from './merchantOnBoardSlice'
-import { toast } from "react-toastify";
-
-export const searchUser = (userData) => async (dispatch) => {
-    try {
-      
-      dispatch(setSearchUserLoading(true));
-      const response = await SearchUser(userData); 
+import { fetchSingleUser, getEmployee } from "../user/userThunk";
+import getManagetDepartmentSlice from "../departments/getManagetDepartmentSlice";
+import { getDepartment, getDepartmentOfManager } from "../departments/departmentThunk";
+export const signupUser = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await RegisterUser(userData); // Call your API function here
+    if(response?.success===true){
+      // console.log(response)
+      localStorage.setItem("Authorization",  response?.data?.authtoken );
      
-
-      
-      dispatch(setSearchUser(response));
-      dispatch(setSearchUserLoading(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setSearchUserError(error));
-      dispatch(setSearchUserLoading(false));
+      //  window.location.reload()
     }
-  };
+    console.log(response)
+    dispatch(setUser(response));
+    dispatch(setLoading(false));
+  } catch (error) {
+    console.log(error)
+    toast.warn(error?.response?.data?.error ||error.message,{
+        autoClose:false,
+        closeButton:true,
+        closeOnClick:true
+      })
+    dispatch(setError(error?.message));
+    dispatch(setLoading(false));
+  }
+};
+export const loginUser = (userData) => async (dispatch) => {
+  try {
+    
+    dispatch(setLoadingLogin(true));
+    const response = await LoginUser(userData); // Call your API function here
+   
 
-  export const loginUserWithOtp = (userData) => async (dispatch) => {
-    try {
+    if(response?.success===true){
+      console.log(response)
+      dispatch(getEmployee())
+      dispatch(fetchSingleUser(response?.data?.authtoken))
+      dispatch(getDepartment(response?.data?.authtoken))
+      dispatch(getDepartmentOfManager(response?.data?.authtoken))
+      localStorage.setItem("Authorization",  response?.data?.authtoken );
       
-      dispatch(setLoginWithOtpLoading(true));
-      const response = await LoginUserWithOtp(userData); 
-     
-
-      
-      dispatch(setLoginWithOtp(response));
-      dispatch(setLoginWithOtpLoading(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setLoginWithOtpError(error));
-      dispatch(setLoginWithOtpLoading(false));
     }
-  };
-  export const loginUser = (userData) => async (dispatch) => {
-    try {
-      
-      dispatch(setLoadingLogin(true));
-      const response = await LoginUser(userData); 
-     
-
-      
-      dispatch(setUserLogin(response));
-      dispatch(setLoadingLogin(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setErrorLogin(error));
-      dispatch(setLoadingLogin(false));
-    }
-  };
-  export const verifyOtp = (userData) => async (dispatch) => {
-    try {
-      
-      dispatch(setVerifyOtpLoading(true));
-      const response = await VerifyOtp(userData); 
-     
-
-      
-      dispatch(setVerifyOtp(response));
-      dispatch(setVerifyOtpLoading(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setVerifyOtpError(error));
-      dispatch(setVerifyOtpLoading(false));
-    }
-  };
-  export const userOnboarding = (userData) => async (dispatch) => {
-    try {
-      
-      dispatch(setUserOnBoardLoading(true));
-      const response = await UserOnBoarding(userData); 
-     
-
-      
-      dispatch(setUserOnBoard(response));
-      dispatch(setUserOnBoardLoading(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setUserOnBoardError(error));
-      dispatch(setUserOnBoardLoading(false));
-    }
-  };
-  export const merchnatOnBoardi = (userData) => async (dispatch) => {
-    try {
-      
-      dispatch(setMerchantOnBoardLoading(true));
-      const response = await MerchantOnBoard(userData); 
-     
-
-      
-      dispatch(setMerchantOnBoard(response));
-      dispatch(setMerchantOnBoardLoading(false));
-    } catch (error) {
-      console.log(error?.response?.data?.message )
-      toast.error(error?.response?.data?.message ||error.message)
-      // toast.error("something went wrong")
-      dispatch(setMerchantOnBoardError(error));
-      dispatch(setMerchantOnBoardLoading(false));
-    }
-  };
+    dispatch(setUserLogin(response));
+    dispatch(setLoadingLogin(false));
+  } catch (error) {
+    
+    toast.warn(error?.response?.data?.error ||error.message,{
+      autoClose:false,
+      closeButton:true,
+      closeOnClick:true
+    })
+    // toast.error("something went wrong")
+    dispatch(setErrorLogin(error?.response));
+    dispatch(setLoadingLogin(false));
+  }
+};

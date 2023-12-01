@@ -1,19 +1,31 @@
 import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "../auth/authSlice";
 import loginReducer from "../auth/loginSlice"
-import searchuserReducer from '../auth/searchUserSlice'
-import loginwithotpReducer from '../auth/loginWithOtpSlice'
-import verifyotpReducer from '../auth/verifyOtpSlice'
-import useronboardReducer from '../auth/UserOnBoardSlice'
-import merchantonboardReducer from '../auth/merchantOnBoardSlice'
+import createdepartmentReducer from "../departments/createDepartmentSlice"
+import updatedepartmentReducer from "../departments/updateDepartmentSlice"
+import deletedepartmentReducer from "../departments/deleteDepartmentSlice"
+import getdepartmentReducer from "../departments/getDepartmentSlice"
+import fetchuserReducer from '../user/fetchUserSlice'
+import fetchsingleuserReducer from '../user/fethSingleUserSlice'
+import getManagetdepartmentReducer from '../departments/getManagetDepartmentSlice'
+import getuserdetailsReducer from '../user/getuserDetailsSlice'
+import filterByNameReducer from '../user/filterByNameSlice'
 import thunk from "redux-thunk";
 const store = configureStore({
     reducer: {
+      auth: authReducer,
       login: loginReducer,
-      searchuser:searchuserReducer,
-      verifyotp:verifyotpReducer,
-      loginwithotp:loginwithotpReducer,
-      useronboard:useronboardReducer,
-      merchantonboard:merchantonboardReducer
+      createdepartment:createdepartmentReducer,
+      getdepartment:getdepartmentReducer,
+      deletedepartment:deletedepartmentReducer,
+      updatedepartment: updatedepartmentReducer,
+      fetchuser:fetchuserReducer,
+      fetchsingleuser:fetchsingleuserReducer,
+      getManagetdepartment:getManagetdepartmentReducer,
+      getuserdetails:getuserdetailsReducer,
+      filterByName:filterByNameReducer
+     
+      
     },
     middleware: [thunk],
   });
